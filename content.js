@@ -4,16 +4,22 @@
 var newVal = [];
 var images = document.getElementsByClassName('userContentWrapper _5pcr');
 for (var i = 0, l = images.length; i < l; i++) {
+	console.log(images[i].innerHTML);
 //console.log(images[i].innerHTML);
-
+photos = images[i].innerHTML.split("photo.php?fbid=")[1];
+if(photos!=undefined){
+	postId = photos.split("&")[0];
+	newVal[postId] = images[i];
+}
 post = images[i].innerHTML.split("posts/");
 //console.log(post[1]);
 if(post[1]!=undefined){
-postId = post[1].split("\" ");
-newVal[postId[0]] = images[i];
+postId = post[1].split("\" ")[0];
+newVal[postId] = images[i];
+}
 //console.log(postId[0]);
 $.ajax({
-					url: "https://172.30.8.117:8080/posts/postid/" + postId[0],
+					url: "https://172.30.8.117:8080/posts/postid/" + postId,
 					type: "GET",
 					// Request body
 			}).done(function(data){
@@ -29,36 +35,41 @@ $.ajax({
 
 //images[i].style.display="none";
 }
-}
+
 window.addEventListener('scroll', function() {
 	console.log('scroll');
-			var images = document.getElementsByClassName('userContentWrapper _5pcr');
-		for (var i = 0, l = images.length; i < l; i++) {
-			//console.log(images[i].innerHTML);
+	var images = document.getElementsByClassName('userContentWrapper _5pcr');
+	for (var i = 0, l = images.length; i < l; i++) {
+		console.log(images[i].innerHTML);
+	//console.log(images[i].innerHTML);
+	photos = images[i].innerHTML.split("photo.php?fbid=")[1];
+	if(photos!=undefined){
+		postId = photos.split("&")[0];
+		newVal[postId] = images[i];
+	}
+	post = images[i].innerHTML.split("posts/");
+	//console.log(post[1]);
+	if(post[1]!=undefined){
+	postId = post[1].split("\" ")[0];
+	newVal[postId] = images[i];
+	}
+	//console.log(postId[0]);
+	$.ajax({
+						url: "https://172.30.8.117:8080/posts/postid/" + postId,
+						type: "GET",
+						// Request body
+				}).done(function(data){
+					//console.log(data);
+					if(data.length!=0) {
+						var id = data[0].id;
+						id = id.split("_")[1];
+						newVal[id].style.display="none";
+					}
+				}).fail(function(err) {
+					console.log(err);
+				});
 
-		  post = images[i].innerHTML.split("posts/");
-			//console.log(post[1]);
-			if(post[1]!=undefined){
-			postId = post[1].split("\" ");
-			//console.log(postId[0]);
-			newVal[postId[0]] = images[i];
-			$.ajax({
-		            url: "https://172.30.8.117:8080/posts/postid/" + postId[0],
-		            type: "GET",
-		            // Request body
-		        }).done(function(data){
-							//console.log(data);
-							if(data.length!=0) {
-								var id = data[0].id;
-								id = id.split("_")[1];
-								newVal[id].style.disply="none";
-							}
-						}).fail(function(err) {
-							console.log(err);
-						});
-
-			//images[i].style.display="none";
-		}
+	//images[i].style.display="none";
 	}
 });
 
